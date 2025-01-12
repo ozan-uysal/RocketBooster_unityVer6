@@ -10,22 +10,24 @@ public class Movement : MonoBehaviour
     Rigidbody rb;
     [SerializeField] int forcepower = 5;
     [SerializeField] int rotationPower = 5;
-    private Vector3 RotatorVector3 = new Vector3(0,0,1);
-    private AudioSource rocketBoostAudio;
+    Vector3 RotatorVector3 = new Vector3(0,0,1);
+    AudioSource audioSource;
+    [SerializeField] AudioClip mainEngine;
+    
 
-    private void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rocketBoostAudio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnEnable() 
+    void OnEnable() 
     {
      thrust.Enable(); 
      rotation.Enable();    
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         
         ProcessThrust();
@@ -33,24 +35,24 @@ public class Movement : MonoBehaviour
 
     }
 
-    private void ProcessThrust()
+    void ProcessThrust()
     {
         if (thrust.IsPressed())
         {
             rb.AddRelativeForce(Vector3.up * forcepower * Time.fixedDeltaTime);
 
-            if(!rocketBoostAudio.isPlaying)
+            if(!audioSource.isPlaying)
             {
-            rocketBoostAudio.Play();
+            audioSource.PlayOneShot(mainEngine);
             }
         }  
         else
         {
-            rocketBoostAudio.Stop();
+            audioSource.Stop();
         }
        
     }
-    private void ProcessRotation()
+    void ProcessRotation()
     {
         float rotationInput = rotation.ReadValue<float>();
 
@@ -64,7 +66,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void ApplyRotation(float rotationThisFrame)
+    void ApplyRotation(float rotationThisFrame)
     {  
         rb.freezeRotation =true;
         transform.Rotate(RotatorVector3 * rotationThisFrame * Time.fixedDeltaTime);
