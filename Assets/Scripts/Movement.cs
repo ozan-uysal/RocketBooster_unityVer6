@@ -10,13 +10,17 @@ public class Movement : MonoBehaviour
     Rigidbody rb;
     [SerializeField] int forcepower = 5;
     [SerializeField] int rotationPower = 5;
+
     Vector3 RotatorVector3 = new Vector3(0,0,1);
     AudioSource audioSource;
     [SerializeField] AudioClip mainEngine;
-    
+    [SerializeField] ParticleSystem leftThrustFX;
+    [SerializeField] ParticleSystem rightThrustFX;
+    [SerializeField] ParticleSystem mainThrustFX;
 
     void Start()
     {
+
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
     }
@@ -29,7 +33,6 @@ public class Movement : MonoBehaviour
 
     void FixedUpdate()
     {
-        
         ProcessThrust();
         ProcessRotation();
 
@@ -44,10 +47,12 @@ public class Movement : MonoBehaviour
             if(!audioSource.isPlaying)
             {
             audioSource.PlayOneShot(mainEngine);
+            mainThrustFX.Play();
             }
         }  
         else
         {
+            mainThrustFX.Stop();
             audioSource.Stop();
         }
        
@@ -59,11 +64,21 @@ public class Movement : MonoBehaviour
         if(rotationInput < 0)
         {
             ApplyRotation(rotationPower);
+            rightThrustFX.Play();
         }
-         else if(rotationInput > 0)
+            else
+            {
+                rightThrustFX.Stop();
+            }
+        if(rotationInput > 0)
         {
             ApplyRotation(-rotationPower);
+            leftThrustFX.Play();
         }
+            else
+            {
+                leftThrustFX.Stop();
+            }
     }
 
     void ApplyRotation(float rotationThisFrame)
