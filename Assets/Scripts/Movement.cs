@@ -42,43 +42,64 @@ public class Movement : MonoBehaviour
     {
         if (thrust.IsPressed())
         {
-            rb.AddRelativeForce(Vector3.up * forcepower * Time.fixedDeltaTime);
-
-            if(!audioSource.isPlaying)
-            {
-            audioSource.PlayOneShot(mainEngine);
-            mainThrustFX.Play();
-            }
-        }  
+            StartThrusting();
+        }
         else
         {
-            mainThrustFX.Stop();
-            audioSource.Stop();
+            StopThrusting();
         }
-       
+
     }
+
+    private void StopThrusting()
+    {
+        mainThrustFX.Stop();
+        audioSource.Stop();
+    }
+
+    private void StartThrusting()
+    {
+        rb.AddRelativeForce(Vector3.up * forcepower * Time.fixedDeltaTime);
+
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngine);
+            mainThrustFX.Play();
+        }
+    }
+
     void ProcessRotation()
     {
         float rotationInput = rotation.ReadValue<float>();
 
-        if(rotationInput < 0)
-        {
-            ApplyRotation(rotationPower);
-            rightThrustFX.Play();
-        }
-            else
-            {
-                rightThrustFX.Stop();
-            }
-        if(rotationInput > 0)
+        RotatingRight(rotationInput);
+        RotatingLeft(rotationInput);
+    }
+
+    private void RotatingLeft(float rotationInput)
+    {
+        if (rotationInput > 0)
         {
             ApplyRotation(-rotationPower);
             leftThrustFX.Play();
         }
-            else
-            {
-                leftThrustFX.Stop();
-            }
+        else
+        {
+            leftThrustFX.Stop();
+        }
+    }
+
+    private void RotatingRight(float rotationInput)
+    {
+        if (rotationInput < 0)
+        {
+            ApplyRotation(rotationPower);
+            rightThrustFX.Play();
+        }
+        else
+        {
+            rightThrustFX.Stop();
+        }
     }
 
     void ApplyRotation(float rotationThisFrame)

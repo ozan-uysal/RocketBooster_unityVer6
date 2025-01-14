@@ -9,22 +9,29 @@ public class CollisionHandler : MonoBehaviour
     [SerializeField] float currentReloadLevelDelay = 2f; 
 
     public bool isControllable = true;
+    bool isCollidable =true;
 
     AudioSource audioSource;
     [SerializeField] AudioClip finishAudio;
     [SerializeField] AudioClip crashAudio;
     [SerializeField] ParticleSystem succesParticle;
     [SerializeField] ParticleSystem explosiveParticle;
+
  
     
 
-    void Start()  
+    void Start() 
+
     {
     audioSource = GetComponent<AudioSource>();
     }
+    void Update()
+    {
+        ResponTheDebugKeys();
+    }
     void OnCollisionEnter(Collision other) 
     {
-        if(!isControllable) {return;}
+        if(!isControllable || !isCollidable) {return;}
 
         switch (other.gameObject.tag)
         {
@@ -78,4 +85,16 @@ public class CollisionHandler : MonoBehaviour
         SceneManager.LoadScene(currentScene);
     }
     
+    void ResponTheDebugKeys()
+    {
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextLevel();
+        }
+        else if(Input.GetKeyDown(KeyCode.C))
+        {
+            isCollidable =!isCollidable;
+            Debug.Log("C key pressed"); 
+        }
+    }
 }
